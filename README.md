@@ -6,9 +6,9 @@
 
 在开始之前，请确保你的开发环境满足以下要求：
 
-*   **JDK**: Java 17 (推荐 OpenJDK 17 或 Oracle JDK 17)
+*   **JDK**: OpenJDK 17
 *   **Maven**: 3.8+
-*   **IDE**: IntelliJ IDEA (推荐) 或 Eclipse
+*   **IDE**: IntelliJ IDEA 
 *   **Database**: MySQL 8.0+
 *   **Git**: 版本控制工具
 
@@ -54,7 +54,7 @@ cd xmu_javaee_2-7_2025-12
 
 | 变量名 | 描述 | 示例值 |
 | :--- | :--- | :--- |
-| `MYSQL_HOST` | 数据库 IP 地址 | `127.0.0.1` 或 `119.3.210.49` |
+| `MYSQL_HOST` (只有这个需要改，其他不需要改)| 数据库 IP 地址 | `119.3.210.49` |
 | `MYSQL_PORT` | 数据库端口 | `3306` |
 | `MYSQL_USERNAME` | 数据库用户名 | `root` |
 | `MYSQL_PASSWORD` | 数据库密码 | `123456` |
@@ -68,7 +68,7 @@ cd xmu_javaee_2-7_2025-12
 3.  **配置运行环境**：
     *   找到 `oomall/aftersale/src/main/java/.../AftersaleApplication.java`。
     *   找到 `oomall/service/src/main/java/.../ServiceApplication.java`。
-    *   **关键步骤**：如果使用非默认数据库配置，请在“Run/Debug Configurations”中，为这两个应用添加上述环境变量（Environment variables）。
+    *   **关键步骤**：如果使用非默认数据库配置，请在“Run/Debug Configurations”中，为这两个应用添加上述环境变量（Environment variables），即在 “步骤4：项目配置” 中修改MYSQL_HOST环境变量为部署mysql服务器的IP地址。
 4.  **启动服务**：
     *   运行 `AftersaleApplication` (端口 8081)
     *   运行 `ServiceApplication` (端口 8082)
