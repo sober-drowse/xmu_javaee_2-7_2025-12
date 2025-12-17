@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: swr.cn-north-4.myhuaweicloud.com/oomall-javaee/mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=oomall
+      - TZ=Asia/Shanghai
+    configs:
+      - source: mysql_init
+        target: /docker-entrypoint-initdb.d/init.sql
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - oomall-net
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == course-node1
+
+  aftersale-service:
+    image: swr.cn-north-4.myhuaweicloud.com/tlj2-7/oomall-aftersale:12.18.0
+    ports:
+      - "8081:8081"
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=password
+      - SERVICE_SERVICE_URL=http://service-service:8082
+    networks:
+      - oomall-net
+    depends_on:
+      - mysql
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == node2
+
+  service-service:
+    image: swr.cn-north-4.myhuaweicloud.com/tlj2-7/oomall-service:12.18.0
+    ports:
+      - "8082:8082"
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=password
+    networks:
+      - oomall-net
+    depends_on:
+      - mysql
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == node3
+
+configs:
+  mysql_init:
+    file: ./sql/init.sql
+
+volumes:
+  db-data:
+
+networks:
+  oomall-net:
+    driver: overlay
