@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: oomall
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - oomall-net
+
+  aftersale-service:
+    build: ./aftersale
+    ports:
+      - "8081:8081"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: password
+      SERVICE_SERVICE_URL: http://service-service:8082
+    depends_on:
+      - mysql
+    networks:
+      - oomall-net
+
+  service-service:
+    build: ./service
+    ports:
+      - "8082:8082"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: password
+    depends_on:
+      - mysql
+    networks:
+      - oomall-net
+
+networks:
+  oomall-net:
+    driver: bridge

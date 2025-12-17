@@ -1,0 +1,28 @@
+### 变量定义
+@shopId = 1
+@aftersaleId = 1
+@contentType = application/json
+
+### 1. 审核售后单 (管理员同意维修)
+# 预期结果：
+# 1. 售后单状态更新为 1 (审核通过)
+# 2. 触发 OpenFeign 调用，在服务模块创建服务单
+PUT http://localhost:8081/shops/{{shopId}}/aftersales/{{aftersaleId}}/confirm
+Content-Type: {{contentType}}
+
+{
+    "confirm": true,
+    "conclusion": "同意维修，请安排上门",
+    "type": 2
+}
+
+### 2. 审核售后单 (管理员拒绝)
+# 预期结果：售后单状态更新为 2 (审核不通过)
+PUT http://localhost:8081/shops/{{shopId}}/aftersales/{{aftersaleId}}/confirm
+Content-Type: {{contentType}}
+
+{
+    "confirm": false,
+    "conclusion": "不符合售后条件",
+    "type": 2
+}
