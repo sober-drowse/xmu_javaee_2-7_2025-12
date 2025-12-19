@@ -30,6 +30,11 @@ public class AfterSaleService {
             throw new RuntimeException("Aftersale not found");
         }
 
+/*        // 新增：检查状态，防止重复审核
+        if (aftersale.getStatus() != 0) {
+            throw new RuntimeException("Aftersale has been audited");
+        }*/
+
         if (confirm) {
             aftersale.setStatus(1); // 审核通过
             aftersale.setConclusion(conclusion);
